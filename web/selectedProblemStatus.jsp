@@ -1,0 +1,622 @@
+
+
+
+<%@page import="Bean.IRProblemsBean"%>
+<%@page import="Bean.StudentProblemsBean"%>
+<%@page import="DAO.MethodDeclarations"%>
+<%@page import="java.util.ListIterator"%>
+<%@page import="DAO.MethodOperation"%>
+<%@page import="java.util.List"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<!DOCTYPE html>
+<html>
+    <head>
+       <meta charset="UTF-8">
+	<meta http-equiv="X-UA-compatible" content = "IE-edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel ="stylesheet" type ="text/css" href="bootstrap.min.css">
+        <script src="jquery-3.3.1.min.js"></script>
+        <script type = text/javascript src="bootstrap.min.js"></script>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+        
+        <jsp:include page="title.jsp" /> 
+        
+        
+        
+<link rel=stylesheet type = text/css href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+   
+
+
+
+ <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+  
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+-->
+
+ <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+<script type="text/javascript"  src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+  <script type="text/javascript"  src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+  
+ 
+        
+  <style>
+      
+       #frame_size{
+                width: 500px;
+                height: 500px;
+            }
+         .uploaded_problems_sticky{
+                position:sticky;
+                top:0;
+               
+            }
+            @media screen and (max-width:1600px){
+                 div.outermost_card_padding{
+                     padding:10px;
+                     width:90%;
+                 }
+                 div.margin_left{
+                     margin-left:32px;
+                     width:30%;
+                 }
+                 div.font_size_upper{
+                     font-size: 35px;
+                 }
+                 div.font_size_lower{
+                     font-size: 25px;
+                 }
+                 div.margin_top{
+                     margin-top: 20px;
+                 }
+               }
+               @media screen and (min-width:1601px){
+                 div.outermost_card_padding{
+                     padding:20px;
+                     width:60%;
+                 }
+                 div.margin_left{
+                     margin-left:405px;
+                     width:20%;
+                 }
+                  div.font_size_upper{
+                     font-size: 50px;
+                 }
+                 div.font_size_lower{
+                      font-size:30px;
+                 }
+               }
+  </style>
+        
+        
+        
+        
+        
+        
+    </head>
+    <body>
+        
+        <%
+         response.setHeader("Cache-Control","no-cache,no-store,must-revalidate");
+            if(session.getAttribute("aadharidFromStudentHome")!=null && session.getAttribute("passwordFromStudentHome")!=null){
+            
+        
+        %>
+        
+        <jsp:include page="studentNavbar.jsp" /> 
+        
+        
+        
+        
+        <div class="container-fluid"  style = "margin-top : 95px;"  >       
+        
+            <div class="row"  >
+                
+                
+                
+                
+                <div class="col-lg-12"  style="height:899px;background-color: #88bdbc;overflow-y:scroll;padding:0px;">
+                        
+                     
+                    
+                     
+                     
+                     <div class="uploaded_problems_sticky" style="z-index:1;margin-top:40px;margin-bottom:40px;width:100%;" >
+                     
+                         <div class="card shadow-lg" style="background-color:rgba(23,67,88,0.5);color:white;padding:40px;"  >
+                                             
+                                               <h2 align="center"><i>Problem Status</i></h2>
+                                             
+                                                            
+                                              </div>
+                                                  
+                                       
+                     
+                                  </div>
+                      <% 
+                          
+                       if((session.getAttribute("aadharidFromStudentHome").toString())!=null){    
+                        String aadharid = session.getAttribute("aadharidFromStudentHome").toString();
+                        session.setAttribute("aadharidFromSelectedProblemStatus", aadharid);
+                        session.setAttribute("passwordFromSelectedProblemStatus",session.getAttribute("passwordFromStudentHome"));
+                        
+                        
+                        
+                        
+                      
+                        
+    MethodDeclarations md = new MethodOperation();
+    
+   
+     
+     String IRAadharid = session.getAttribute("IRAadharidFromStudentHome").toString();
+      session.setAttribute("IRAadharidFromSelectedProblemStatus" ,IRAadharid);
+      StudentProblemsBean stpb=md.selectStudentProblems(aadharid ,IRAadharid);
+       
+      boolean b = md.checkForSuggestion(aadharid, IRAadharid);
+      
+      if(stpb!=null && stpb.getStatus2().equals("Not Accepted Yet")){  
+                
+%>
+                              
+ 
+                         
+                                                       
+                                                      
+                                      
+                                        
+                                        
+                                              
+                                                        
+                                                     
+                    
+                          
+                          
+                          
+                        <div class="card margin_left" style="background-color:#112d32;color:white;" >
+                             <div align="center">  
+                                                        <div class="card-body font_size_upper"  >
+                                                            <%=stpb.getP_id()%>
+                                                        </div>
+                                                        <div   style="padding-left:15px;padding-right:15px;padding-bottom:20px;" class="font_size_lower" >Problem Id</div>
+                                                    </div>     
+                          </div>
+                          
+                          
+                                                                              
+                                                    
+                                      
+                                        
+                       <div align="center">                                            
+                       <div class="card shadow-lg outermost_card_padding" style="margin-bottom:70px;background-color: #112d32;">
+                           <div class="card" style="background-color:#f3f8f8;padding-top:20px;padding-left:20px;padding-right:20px;font-size:20px;min-height:450px;">
+                           
+                       
+                           <div class="card-body">
+                                          
+                                                 <h1 align="center">Problem Description</h1>
+                               <p align="left"><%= stpb.getP_des()%></p>
+                               
+                               
+                              <hr>
+                                   <div class="row" style="margin-left:10px;"><h4>Status</h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<h3><span class="badge badge-secondary"><%=stpb.getStatus2()%></span></h3></div>
+                               <div class="row" style="margin-left:10px;"><h4>Uploaded&nbsp;:&nbsp;<%=stpb.getPdate()%></h4></div>
+                                   
+                              
+                              
+                           </div>
+                        
+                               <div class="card-footer" >
+                                             
+                                            <div class="row" >
+                                               <div class="col-12"><a class="btn btn-info btn-block " href="viewSelectedStudentProblem.jsp" style="text-decoration:none; border: none;"><h2><span><i class="fa fa-eye"></i> View</span></h2></a></div> 
+                                               
+                                              
+                                            </div>
+                                    </div>
+                             </div>     
+
+
+                                   
+
+
+                             
+                           
+                              
+                        </div>
+                          
+                    </div>                           
+                                               
+                   
+                                               
+                                               
+
+                                   
+
+
+                             
+                           
+                              
+                 
+                         </div>
+
+              
+         
+
+<%
+                       }else if(stpb!=null && stpb.getStatus2().equals("Rejected") && b==false){     
+                       
+                       
+                       
+                       %>
+
+                    
+                                                                            
+                    
+                          
+                          
+                          
+                        <div class="card margin_left" style="background-color:#112d32;color:white;" >
+                            <div align="center">
+                                                        <div class="card-body font_size_upper"  >
+                                                            <%=stpb.getP_id()%>
+                                                        </div>
+                                                        <div  class="font_size_lower" style="padding-bottom:20px;"  >Problem Id</div>
+                                                        </div>
+                                                    </div>    
+                          
+                          
+                          
+                                                                              
+                                                    
+                                      
+                     <div align="center">                   
+                                                               
+                       <div class="card shadow-lg outermost_card_padding" style="margin-bottom:70px;background-color: #112d32;">
+                            
+                           <div class="card" style="background-color:#f3f8f8;padding-top:20px;padding-left:20px;padding-right:20px;font-size:20px;min-height:450px;">
+                           
+                      
+                           <div class="card-body">
+                                          
+                                                 <h1 align="center">Problem Description</h1>
+                               <p align="left"><%=stpb.getP_des()%></p>
+                               
+                               
+                              <hr>
+                                   <div class="row" style="margin-left:10px;"><h4>Status</h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<h3><span class="badge badge-secondary"><%=stpb.getStatus2()%></span></h3></div>
+                               <div class="row" style="margin-left:10px;"><h4>Uploaded&nbsp;:&nbsp;<%=stpb.getPdate()%></h4></div>
+                                   
+                              
+                              
+                           </div>
+                        
+                               <div class="card-footer" >
+                                             
+                                            <div class="row" >
+                                               <div class="col-sm-12 col-lg-6"><a class="btn btn-info btn-block " href="viewSelectedStudentProblem.jsp" style="text-decoration:none; border: none;"><h2><span><i class="fa fa-eye"></i> View</span></h2></a></div> 
+                                               <div class="col-sm-12 col-lg-6 margin_top" ><div style="cursor:not-allowed;"><a class="btn btn-primary btn-block " href="selectOneOutOfThree.jsp?Pid=<%=stpb.getP_id()%>" style="text-decoration:none; border: none;pointer-events:none;"><h2><span>Check Suggestions</span></h2></a></div></div>  
+                                              
+                                            </div>
+                                    </div>
+                             </div>     
+
+
+                                   
+
+
+                             
+                           
+                              
+                        </div>
+                          
+                          </div>                    
+                                               
+                   
+                                               
+                                               
+
+                                   
+
+
+                             
+                           
+                              
+                 
+                       
+                    
+                    
+                    <%
+                       
+                       
+                       
+                       }else if(stpb!=null && stpb.getStatus2().equals("Rejected") && b==true){   
+                       
+                      
+                       %>
+                           
+                       
+                           
+                           
+               
+                       
+                       
+                       
+                                                                             
+                    
+                          
+                          
+                          
+                        <div class="card margin_left" style="background-color:#112d32;color:white;">
+                            <div align="center">
+                                                        <div class="card-body font_size_upper"  >
+                                                            <%=stpb.getP_id()%>
+                                                        </div>
+                                                        <div class="font_size_lower"  style="padding-bottom:20px;"  >Problem Id</div>
+                                                    </div>    
+                                                    </div>
+                          
+                          
+                                                                              
+                                                    
+                                      
+                                        
+                       <div align="center">                                            
+                       <div class="card shadow-lg outermost_card_padding" style="margin-bottom:70px;background-color: #112d32;">
+                           <div class="card" style="background-color:#f3f8f8;padding-top:20px;padding-left:20px;padding-right:20px;font-size:20px;min-height:450px;">
+                           
+                       
+                           <div class="card-body">
+                                          
+                                                 <h1 align="center">Problem Description</h1>
+                               <p align="left"><%=stpb.getP_des()%></p>
+                               
+                               
+                              <hr>
+                                   <div class="row" style="margin-left:10px;"><h4>Status</h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<h3><span class="badge badge-secondary"><%=stpb.getStatus2()%></span></h3></div>
+                               <div class="row" style="margin-left:10px;"><h4>Uploaded&nbsp;:&nbsp;<%=stpb.getPdate()%></h4></div>
+                                   
+                              
+                              
+                           </div>
+                        
+                               <div class="card-footer" >
+                                             
+                                            <div class="row" >
+                                               <div class="col-sm-12 col-lg-6"><a class="btn btn-info btn-block " href="viewSelectedStudentProblem.jsp" style="text-decoration:none; border: none;"><h2><span><i class="fa fa-eye"></i> View</span></h2></a></div> 
+                                               <div class="col-sm-12 col-lg-6 margin_top"><a class="btn btn-primary btn-block " href="selectOneOutOfThree.jsp?Pid=<%=stpb.getP_id()%>" style="text-decoration:none; border: none;"><h2><span>Check Suggestions</span></h2></a></div>  
+                                              
+                                            </div>
+                                    </div>
+                             </div>     
+
+
+                                   
+
+
+                             
+                           
+                              
+                        </div>
+                   </div>       
+                                               
+                                               
+                   
+                                               
+                                               
+
+                                   
+
+
+                             
+                           
+                              
+                 
+                       
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+               <%            
+                       
+                       
+                       }else if(stpb!=null && stpb.getStatus2().equals("Accepted")){  
+                       
+                       %>
+               
+                    
+                    
+                       
+                       
+                       
+                                                                           
+                    
+                          
+                          
+                          
+                        <div class="card margin_left" style="background-color:#112d32;color:white;" >
+                            <div align="center">
+                                                        <div class="card-body font_size_upper"  >
+                                                            <%=stpb.getP_id()%>
+                                                        </div>
+                                                        <div class="font_size_lower"  style="padding-bottom:20px;padding-left:15px;padding-right: 15px"  >Problem Id</div>
+                                                        </div>
+                                                    </div>     
+                          
+                          
+                          
+                                                                              
+                                                    
+                                      
+                      <div align="center">                  
+                                                                   
+                       <div class="card shadow-lg outermost_card_padding" style="margin-bottom:70px;background-color: #112d32;">
+                           <div class="card" style="background-color:#f3f8f8;padding-top:20px;padding-left:20px;padding-right:20px;font-size:20px;min-height:450px;">
+                           
+                       
+                           <div class="card-body">
+                                          
+                                                 <h1 align="center">Problem Description</h1>
+                              <p align="left"><%=stpb.getP_des()%></p>
+                               
+                               
+                              <hr>
+                                   <div class="row" style="margin-left:10px;"><h4>Status</h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<h3><span class="badge badge-secondary"><%=stpb.getStatus2()%></span></h3></div>
+                               <div class="row" style="margin-left:10px;"><h4>Uploaded&nbsp;:&nbsp;<%=stpb.getPdate()%></h4></div>
+                                   
+                              
+                              
+                           </div>
+                        
+                               <div class="card-footer" >
+                                             
+                                            <div class="row" >
+                                               <div class="colsm-12 col-lg-6"><a class="btn btn-info btn-block " href="viewSelectedStudentProblem.jsp" style="text-decoration:none; border: none;"><h2><span><i class="fa fa-eye"></i> View</span></h2></a></div> 
+                                               <div class="col-sm-12 col-lg-6 margin_top" ><a class="btn btn-primary btn-block " href="StudentSolution.jsp?Pid=<%=stpb.getP_id()%>" style="text-decoration:none; border: none;"><h2><span><i class="fa fa-upload"></i> Upload Solution</span></h2></a></div>  
+                                              
+                                            </div>
+                                    </div>
+                             </div>     
+
+
+                                   
+
+
+                             
+                           
+                              
+                        </div>
+                       </div>   
+                                               
+                                               
+                   
+                                               
+                                               
+
+                                   
+
+
+                             
+                           
+                              
+                 
+                        
+                       
+                       
+                       
+                    
+                    
+                    
+                    
+                    
+                    <%
+                       
+                       }else if(stpb==null){
+                       
+                       %>
+               
+                    
+                                                               <div align="center">  
+                           <div class="card shadow-lg" align="center" style="background-color:white;padding-left:20px;padding-right:20px;font-size:20px;min-height:450px;width:80%;margin-bottom:40px;" >
+                           
+                             
+                       
+                           <div class="card-body">
+                               
+                             <span ><i class="fa fa-folder-open fa-10x " style="color:lightgrey;margin-top:60px;"></i></span>
+                                <h1 align="center" style="color:lightgrey;"> You have not Selected any problem Yet!   </h1> 
+                                     
+                           </div>
+                                
+                        
+                               
+                             </div>     
+
+
+                                   
+
+
+                             
+                           
+                              
+                   </div>   
+                    
+                    
+                    
+                    <%
+                       
+                       }
+                       
+            }
+           
+                    %>    
+                     
+                     
+                     
+                     
+                     
+                     
+                                              
+                                             
+                                                   
+                                                  
+                                             
+                         
+
+                     </div>
+                
+                
+                
+                
+                
+            </div>
+        
+        </div>
+        
+        
+        
+        
+        
+        
+  <%
+       }else{
+           
+               response.sendRedirect("StudentLogin.jsp?value=0");
+           
+           }
+       %>      
+      
+
+
+
+
+
+
+    </body>
+</html>
